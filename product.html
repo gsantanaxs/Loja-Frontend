@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B7Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'] },
+                    colors: { primary: '#1D4FFE' },
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-[#F9F9F9] font-sans text-base">
+
+    <!-- Header Warning -->
+    <section class="bg-black text-white py-4 text-center text-sm">
+        <div class="md:hidden"><span class="font-bold">FRETE GRÁTIS</span> para todo o Nordeste!</div>
+        <div class="hidden md:block"><span class="font-bold">FRETE GRÁTIS</span> para todo o Nordeste nas compras acima de R$ 199,00. <span class="font-bold">APROVEITA!</span></div>
+    </section>
+
+    <!-- Header -->
+    <header class="bg-white">
+        <div class="max-w-[1024px] mx-auto px-6 py-8 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="index.html" class="mr-10">
+                    <img src="assets/images/ui/logo-black.png" alt="B7Store" class="h-8" />
+                </a>
+                <ul class="hidden lg:flex items-center gap-10 list-none" id="nav-cats"></ul>
+            </div>
+            <div class="flex items-center gap-4">
+                <input type="text" id="search-input" placeholder="Pesquisa"
+                    class="hidden lg:block w-40 h-12 border border-gray-300 rounded px-4 text-sm outline-none" />
+                <a href="login.html" class="w-12 h-12 border border-gray-300 rounded flex justify-center items-center hover:bg-black/5 transition-colors">
+                    <img src="assets/images/ui/user-line.png" alt="" class="w-6 h-6" />
+                </a>
+                <a href="checkout.html" class="w-12 h-12 border border-gray-300 rounded flex justify-center items-center hover:bg-black/5 transition-colors relative">
+                    <img src="assets/images/ui/shopping-bag-4-line.png" alt="" class="w-6 h-6" />
+                    <span class="cart-badge absolute -top-1.5 -right-1.5 bg-primary text-white text-xs font-bold w-5 h-5 rounded-full hidden items-center justify-center"></span>
+                </a>
+                <button id="menu-burger" class="lg:hidden w-12 h-12 border border-gray-300 rounded flex justify-center items-center cursor-pointer hover:bg-black/5">
+                    <img id="menu-icon-off" src="assets/images/ui/menu-line.png" alt="" class="w-6 h-6" />
+                    <img id="menu-icon-on" src="assets/images/ui/menu-line-white.png" alt="" class="w-6 h-6 hidden" />
+                </button>
+            </div>
+        </div>
+        <div id="header-menu" class="hidden lg:hidden pb-8"></div>
+        <div class="lg:hidden px-6 pb-6">
+            <input type="text" id="search-input-mobile" placeholder="O que você procura?"
+                class="w-full h-12 border border-gray-300 rounded px-4 text-sm outline-none text-gray-500" />
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="max-w-[1024px] mx-auto py-8">
+
+        <!-- Breadcrumb -->
+        <section class="mx-6 text-gray-500 text-sm lg:mt-8">
+            <a href="index.html" class="no-underline text-gray-500 hover:text-black">Home</a> &gt;
+            <a href="produtos.html" class="no-underline text-gray-500 hover:text-black" id="breadcrumb-cat">Produtos</a> &gt;
+            <span id="breadcrumb-name">...</span>
+        </section>
+
+        <!-- Produto -->
+        <section class="mx-6 mt-8">
+
+            <!-- Loading skeleton -->
+            <div id="product-loading" class="flex flex-col lg:flex-row gap-8 lg:gap-32 animate-pulse">
+                <div class="lg:w-[350px] w-full">
+                    <div class="bg-gray-200 rounded w-full aspect-square"></div>
+                </div>
+                <div class="flex-1 space-y-4 mt-6 lg:mt-0">
+                    <div class="h-3 bg-gray-200 rounded w-1/4"></div>
+                    <div class="h-7 bg-gray-200 rounded w-3/4"></div>
+                    <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                    <div class="h-10 bg-gray-200 rounded w-1/3 mt-4"></div>
+                </div>
+            </div>
+
+            <!-- Conteúdo real -->
+            <div id="product-content" class="hidden flex-col lg:flex-row gap-8 lg:gap-32">
+                <!-- Foto -->
+                <div class="lg:w-[350px]">
+                    <div class="bg-white border border-gray-300 rounded flex justify-center items-center p-10">
+                        <img class="w-full" id="product-image" src="" alt="" />
+                    </div>
+                </div>
+                <!-- Info -->
+                <div class="flex-1 mt-6 lg:mt-0">
+                    <div class="text-xs text-gray-500" id="product-sku"></div>
+                    <div class="text-2xl text-black font-bold mt-1" id="product-name"></div>
+
+                    <!-- Tamanho -->
+                    <div class="text-base text-gray-500 mt-4 mb-6">
+                        <div>Selecione o tamanho:</div>
+                        <div id="sizes-container" class="flex gap-3 mt-3 flex-wrap"></div>
+                    </div>
+
+                    <!-- Preço -->
+                    <div class="text-base text-gray-400" id="product-old-price-wrap" style="display:none">
+                        de <span class="line-through" id="product-old-price"></span> por
+                    </div>
+                    <div class="text-4xl text-primary font-bold" id="product-price"></div>
+                    <div class="text-base text-gray-500 mt-1">Forma de pagamento via PIX</div>
+
+                    <!-- Ações -->
+                    <div class="flex gap-4 mt-6">
+                        <button id="btn-add-cart"
+                            class="bg-primary text-white text-base border-0 rounded px-8 py-4 cursor-pointer hover:bg-blue-700 transition-colors font-medium">
+                            Adicionar à sacola
+                        </button>
+                        <button id="btn-favorite"
+                            class="heart-btn w-14 h-14 border border-gray-300 rounded flex justify-center items-center cursor-pointer hover:bg-black/5 transition-all">
+                            <img id="heart-icon" class="w-6 h-6" src="assets/images/ui/heart-3-line.png" alt="Favorito" />
+                        </button>
+                        <button onclick="navigator.share ? navigator.share({title: document.title, url: location.href}) : navigator.clipboard.writeText(location.href).then(() => alert('Link copiado!'))"
+                            class="w-14 h-14 border border-gray-300 rounded flex justify-center items-center cursor-pointer hover:bg-black/5 transition-colors">
+                            <img class="w-6 h-6" src="assets/images/ui/share-line.png" alt="Compartilhar" />
+                        </button>
+                    </div>
+
+                    <!-- Toast de adicionado -->
+                    <div id="cart-toast" class="hidden mt-4 bg-green-50 border border-green-200 text-green-700 rounded px-4 py-3 text-sm">
+                        ✓ Produto adicionado à sacola! <a href="checkout.html" class="underline font-medium">Ver sacola</a>
+                    </div>
+
+                    <!-- Calcular frete -->
+                    <div class="border-t border-gray-300 pt-8 mt-8 text-base text-gray-500">
+                        <div>Calcular frete e prazo:</div>
+                        <div class="flex gap-4 mt-4">
+                            <input type="text" id="cep-input" class="flex-1 border border-gray-300 rounded text-base text-gray-500 outline-none px-5 py-4" placeholder="Digite aqui o CEP" maxlength="9" />
+                            <button id="btn-calcular" class="bg-primary text-white text-base border-0 rounded px-6 py-4 cursor-pointer hover:bg-blue-700 transition-colors">Calcular</button>
+                        </div>
+                        <div id="frete-result" class="hidden bg-white border border-gray-300 rounded-lg p-4 mt-4 text-sm">
+                            <div class="flex justify-between">
+                                <span>Entrega em até 7 dias úteis</span>
+                                <span class="text-green-600 font-bold">Grátis</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Erro -->
+            <div id="product-error" class="hidden py-16 text-center text-gray-400 text-lg">
+                Produto não encontrado. <a href="produtos.html" class="text-primary underline">Ver todos os produtos</a>
+            </div>
+        </section>
+
+        <!-- Descrição -->
+        <section class="mx-6 mt-8 bg-white border border-gray-300 rounded-lg p-6">
+            <div class="flex justify-between items-center font-bold text-black border-b border-gray-300 pb-6 mb-6">
+                <div>Informações do produto</div>
+            </div>
+            <div id="product-description" class="text-gray-500 text-base leading-relaxed">—</div>
+        </section>
+
+        <!-- Produtos relacionados -->
+        <section class="mx-6 mt-10">
+            <div class="text-2xl font-bold text-black mb-8">Você também vai gostar.</div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6" id="related-grid"></div>
+        </section>
+
+    </main>
+
+    <!-- Newsletter -->
+    <section class="bg-white border-t border-gray-300 mt-10">
+        <div class="max-w-[1024px] mx-auto px-6 py-14 flex flex-col lg:flex-row items-center gap-8">
+            <div class="w-full lg:w-auto flex flex-col lg:flex-row items-center text-center lg:text-left">
+                <img src="assets/images/ui/mail-send-line.png" alt="" class="w-16 h-16 lg:mr-7" />
+                <div class="mt-4 lg:mt-0">
+                    <h3 class="text-2xl font-normal text-black mb-1">Fique por dentro das promoções!</h3>
+                    <p class="text-gray-500">Coloque seu e-mail e seja o primeiro a saber</p>
+                </div>
+            </div>
+            <div class="w-full flex-1 flex flex-col lg:flex-row gap-6">
+                <input type="text" placeholder="Qual seu e-mail?" class="flex-1 border border-gray-300 rounded px-6 py-5 text-base text-gray-500 outline-none" />
+                <button class="bg-primary text-white text-base border-0 rounded px-8 py-4 cursor-pointer">Enviar</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white">
+        <div class="max-w-[1024px] mx-auto">
+            <div class="py-16 flex flex-col lg:flex-row items-center lg:justify-between text-center lg:text-left">
+                <a href="index.html"><img src="assets/images/ui/logo-white.png" alt="B7Store" class="h-8" /></a>
+                <ul class="mt-10 lg:mt-0 flex flex-col lg:flex-row gap-10 list-none">
+                    <li><a href="produtos.html?category=camisetas" class="no-underline text-white">Camisetas</a></li>
+                    <li><a href="produtos.html?category=bones" class="no-underline text-white">Bonés</a></li>
+                </ul>
+            </div>
+            <div class="py-12 border-t border-white/25 flex justify-between items-center">
+                <div class="text-gray-400 text-sm">Se você leu isso aqui, saiba que está no caminho certo!</div>
+                <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="w-12 h-12 border border-gray-300 rounded flex justify-center items-center cursor-pointer hover:bg-white/10">
+                    <img src="assets/images/ui/arrow-up-line.png" alt="" class="w-6 h-6" />
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { getProductBySlug, getProducts, getCategories, formatPrice } from './assets/js/api.js'
+        import { addToCart, updateCartBadge } from './assets/js/cart.js'
+        import { toggleFavorite, isFavorite, initHeartButtons } from './assets/js/favorites.js'
+
+        updateCartBadge()
+
+        // Burger
+        document.getElementById('menu-burger').addEventListener('click', () => {
+            document.getElementById('header-menu').classList.toggle('hidden')
+            document.getElementById('menu-icon-off').classList.toggle('hidden')
+            document.getElementById('menu-icon-on').classList.toggle('hidden')
+        })
+
+        // Search
+        function goSearch(e) {
+            if (e.key === 'Enter' && e.target.value.trim())
+                window.location.href = `produtos.html?search=${encodeURIComponent(e.target.value.trim())}`
+        }
+        document.getElementById('search-input').addEventListener('keydown', goSearch)
+        document.getElementById('search-input-mobile').addEventListener('keydown', goSearch)
+
+        // CEP
+        function formatCep(v) { return v.replace(/\D/g,'').replace(/(\d{5})(\d)/,'$1-$2').substring(0,9) }
+        document.getElementById('cep-input').addEventListener('input', e => { e.target.value = formatCep(e.target.value) })
+        document.getElementById('btn-calcular').addEventListener('click', () => {
+            if (document.getElementById('cep-input').value.replace(/\D/g,'').length === 8)
+                document.getElementById('frete-result').classList.remove('hidden')
+        })
+
+        // Categorias no nav
+        getCategories().then(cats => {
+            document.getElementById('nav-cats').innerHTML = cats.map(c =>
+                `<li><a href="produtos.html?category=${c.slug}" class="no-underline text-gray-500 hover:text-black transition-colors">${c.name}</a></li>`
+            ).join('')
+            document.getElementById('header-menu').innerHTML = cats.map(c =>
+                `<a href="produtos.html?category=${c.slug}" class="block no-underline text-gray-500 text-lg py-6 px-8 border-b border-gray-200">${c.name}</a>`
+            ).join('')
+        })
+
+        let currentProduct = null
+        let selectedSize = null
+
+        async function loadProduct() {
+            const slug = new URLSearchParams(location.search).get('slug')
+            if (!slug) { showError(); return }
+
+            try {
+                const product = await getProductBySlug(slug)
+                if (!product) { showError(); return }
+                currentProduct = product
+
+                document.title = product.name + ' - B7Store'
+                document.getElementById('product-image').src = product.image_url || 'assets/images/products/camiseta-css.png'
+                document.getElementById('product-image').alt = product.name
+                document.getElementById('product-name').textContent = product.name
+                document.getElementById('product-sku').textContent = product.code ? `CÓD: ${product.code}` : ''
+                document.getElementById('product-price').textContent = formatPrice(product.price)
+                document.getElementById('product-description').textContent = product.description || 'Produto B7Store.'
+
+                if (product.price_from) {
+                    document.getElementById('product-old-price').textContent = formatPrice(product.price_from)
+                    document.getElementById('product-old-price-wrap').style.display = ''
+                }
+
+                if (product.category) {
+                    const catName = typeof product.category === 'object' ? product.category.name : product.category
+                    const catSlug = typeof product.category === 'object' ? product.category.slug : ''
+                    const el = document.getElementById('breadcrumb-cat')
+                    el.textContent = catName
+                    if (catSlug) el.href = `produtos.html?category=${catSlug}`
+                }
+                document.getElementById('breadcrumb-name').textContent = product.name
+
+                // Tamanhos
+                const sizes = product.sizes || []
+                const sizesEl = document.getElementById('sizes-container')
+                if (sizes.length > 0) {
+                    sizesEl.innerHTML = sizes.map(s => `
+                        <button class="size-btn w-12 h-12 border border-gray-300 rounded flex justify-center items-center cursor-pointer hover:border-primary hover:text-primary transition-colors text-sm font-medium" data-size="${s}">${s}</button>
+                    `).join('')
+                    sizesEl.querySelectorAll('.size-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            sizesEl.querySelectorAll('.size-btn').forEach(b => {
+                                b.classList.remove('bg-primary','text-white','border-primary')
+                                b.classList.add('border-gray-300')
+                            })
+                            btn.classList.add('bg-primary','text-white','border-primary')
+                            btn.classList.remove('border-gray-300')
+                            selectedSize = btn.dataset.size
+                        })
+                    })
+                } else {
+                    sizesEl.closest('.text-base').style.display = 'none'
+                }
+
+                // Coração
+                const favBtn = document.getElementById('btn-favorite')
+                favBtn.dataset.productId = product.id
+                updateHeartUI(isFavorite(product.id))
+                favBtn.addEventListener('click', () => {
+                    const nowFav = toggleFavorite(product.id)
+                    updateHeartUI(nowFav)
+                    favBtn.style.transform = 'scale(1.3)'
+                    setTimeout(() => favBtn.style.transform = 'scale(1)', 200)
+                })
+
+                // Adicionar à sacola
+                document.getElementById('btn-add-cart').addEventListener('click', () => {
+                    addToCart({
+                        id: product.id,
+                        slug: product.slug,
+                        name: product.name,
+                        price: product.price,
+                        image_url: product.image_url
+                    })
+                    updateCartBadge()
+                    const toast = document.getElementById('cart-toast')
+                    toast.classList.remove('hidden')
+                    setTimeout(() => toast.classList.add('hidden'), 4000)
+                })
+
+                // Mostrar conteúdo
+                document.getElementById('product-loading').classList.add('hidden')
+                document.getElementById('product-content').classList.remove('hidden')
+                document.getElementById('product-content').classList.add('flex')
+
+                // Relacionados
+                loadRelated(product)
+
+            } catch (err) {
+                console.error(err)
+                showError()
+            }
+        }
+
+        function updateHeartUI(active) {
+            const img = document.getElementById('heart-icon')
+            const btn = document.getElementById('btn-favorite')
+            if (active) {
+                img.src = 'assets/images/ui/heart-3-fill.png'
+                btn.classList.add('border-red-400')
+            } else {
+                img.src = 'assets/images/ui/heart-3-line.png'
+                btn.classList.remove('border-red-400')
+            }
+        }
+
+        async function loadRelated(product) {
+            try {
+                const catSlug = typeof product.category === 'object' ? product.category.slug : ''
+                const { data } = await getProducts({ limit: 4, category: catSlug })
+                if (!data) return
+                const related = data.filter(p => p.id !== product.id).slice(0, 4)
+                const grid = document.getElementById('related-grid')
+                grid.innerHTML = related.map(p => `
+                    <div class="bg-white border border-gray-300 rounded-lg p-4 relative">
+                        <a href="product.html?slug=${p.slug}" class="block no-underline">
+                            <img src="${p.image_url || 'assets/images/products/camiseta-css.png'}" alt="${p.name}" class="w-full" loading="lazy" />
+                            <div class="font-bold text-sm text-black mt-4">${p.name}</div>
+                            <div class="font-bold text-base text-primary my-1">${formatPrice(p.price)}</div>
+                        </a>
+                    </div>
+                `).join('')
+            } catch (e) { console.error(e) }
+        }
+
+        function showError() {
+            document.getElementById('product-loading').classList.add('hidden')
+            document.getElementById('product-error').classList.remove('hidden')
+        }
+
+        loadProduct()
+    </script>
+
+</body>
+</html>
